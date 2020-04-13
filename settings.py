@@ -1,12 +1,30 @@
 import os
 from pathlib import Path
 
-from django.urls import reverse_lazy
+from collections.abc import Mapping
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # region - custom settings (to put in environment settings) -
+class LazyDict(Mapping):
+    def __init__(self, *args, **kw):
+        self._raw_dict = dict(*args, **kw)
+
+    def __getitem__(self, key):
+        if key.startswith('#'):
+            func, arg = self._raw_dict.__getitem__(key)
+            return func(arg)
+        return self._raw_dict.__getitem__(key)
+
+    def __iter__(self):
+        return iter(self._raw_dict)
+
+    def __len__(self):
+        return len(self._raw_dict)
+
+
 settings = {}
 errors = []
 
@@ -26,7 +44,7 @@ def conf_ignore_if_sqlite():
                    "Your database isn't sqlite, this var must be configured"]}
 
 
-environment_variables = {
+environment_variables = LazyDict({
     # SECURITY WARNING: don't run with debug turned on in production!
     'DEBUG': {'required': True,
               'parser': [eval, lambda v: isinstance(v, bool)]},
@@ -67,7 +85,7 @@ environment_variables = {
     'DATABASE_DATABASE': conf_ignore_if_sqlite(),
     'DATABASE_USER': conf_ignore_if_sqlite(),
     'DATABASE_PASSWORD': conf_ignore_if_sqlite(),
-}
+})
 
 for var, infos in environment_variables.items():
     if var in os.environ:
