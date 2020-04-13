@@ -90,7 +90,7 @@ configuration (button "Add Configuration" on the top right of
 setting.
 
 ## How to handle sqlite/development and PostGreSQL/production settings?
-You have nothing to do with this settings.py code: the function
+You have nothing to do with this `settings.py` code: the function
 `conf_ignore_if_sqlite()` will use what you've setup in your environment
 variable and if you are in development mode (= `DEBUG='True'`) it supposes
 you use sqlite. You might change the code to meet your requirements.
@@ -122,7 +122,7 @@ SMS_PRO_SECRET_KEY = settings['SMS_PRO_SECRET_KEY']
 
 And you're good to go!
 
-### You need to make sure `SMS_PRO_SECRET_KEY` is of a specific type?
+### What if you need to make sure `SMS_PRO_SECRET_KEY` is of a specific type?
 Precise what the parser is, and a callback function that checks if
 it is of the expected type.
 
