@@ -38,7 +38,7 @@ But if you use the previous tool:
 - no more possibilities to call auto-completion features
  
 That there are **no** "Django settings" libraries available that 
-will keep PyCharm *"aware"* of all your settings variables
+will keep [PyCharm][2] *"aware"* of all your settings variables
 (if you know one let me know, I'm interested!).
 
 ... On the other side, if you want to keep your settings very simple (e.g.
@@ -66,7 +66,7 @@ auto-completion and variable settings features.
 - and setup your environment variables: in Linux, there are many ways to
   setup your environment variables, the easiest one to test is to type
   your assignments and then execute your command, for example:
-```python
+```shell script
 DEBUG='True' python3 manage.py runserver
 ```
 
