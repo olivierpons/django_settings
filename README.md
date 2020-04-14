@@ -50,18 +50,18 @@ easily switch between development and production environments.
 That's why I wrote `django_settings`:
 - to use the environment variables to setup the configuration
 - to make sure what's in the variable is *exactly what you expect*
-- to stay 100% compatible with `PyCharm`
+- to stay 100% compatible with [PyCharm][2]
 
 
 This is why you still have a few things to do, but **far less to do**
-than with "basic" Django settings file, and you won't loose your `PyCharm`
+than with "basic" Django settings file, and you won't loose your [PyCharm][2]
 auto-completion and variable settings features.
 
 ## django_settings: howto 
 - Copy/paste the code of the settings file `settings.py` in this repo here
   **at the beginning** of your own `settings.py` file.
-- comment all your variables that are declared *after* this code. `PyCharm`
-  is here to help: you will see PyCharm's suggestion like
+- comment all your variables that are declared *after* this code. [PyCharm][2]
+  is here to help: you will see [PyCharm][2]'s suggestion like
   "`Redeclared 'YOUR_CONST' defined above without usage`".
 - and setup your environment variables: in Linux, there are many ways to
   setup your environment variables, the easiest one to test is to type
@@ -74,7 +74,7 @@ And you will see `settings.py` in action: if all the required environment
 variables are here everything will work flawlessly, otherwise your will
 read something like:
 
-```python
+```python pythonstub
   File "/home/hqf-development/projects/my_project/settings.py", line 100, in <module>
     raise Exception("Please set the environment variables: "
 Exception: Please set the environment variables: DATA_UPLOAD_MAX_NUMBER_FIELDS.
@@ -82,9 +82,9 @@ Exception: Please set the environment variables: DATA_UPLOAD_MAX_NUMBER_FIELDS.
 
 ... and you will know which variable is missing.
 
-- If you want to setup everything in [`PyCharm`][2] just add a new
+- If you want to setup everything in [PyCharm][2] just add a new
 configuration (button "Add Configuration" on the top right of 
-[`PyCharm`][2]), and just change your environment variables in this
+[PyCharm][2]), and just change your environment variables in this
 setting.
 
 ## How to handle sqlite/development and PostGreSQL/production settings?
