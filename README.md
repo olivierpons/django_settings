@@ -58,7 +58,7 @@ than with "basic" Django settings file, and you won't loose your [PyCharm][2]
 auto-completion and variable settings features.
 
 ## django_settings: howto 
-- Copy/paste the code of the settings file `settings.py` in this repo here
+- Copy/paste the code of the settings file [`settings.py`][3] in this repo here
   **at the beginning** of your own `settings.py` file.
 - comment all your variables that are declared *after* this code. [PyCharm][2]
   is here to help: you will see [PyCharm][2]'s suggestion like
@@ -155,3 +155,4 @@ If you find this `settings.py` useful let me know!
 
 [1]: https://django-configurations.readthedocs.io/en/stable/`django-configurations` 
 [2]: https://www.jetbrains.com/pycharm/
+[3]: https://github.com/olivierpons/django_settings/settings.py
