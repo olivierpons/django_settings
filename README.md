@@ -153,6 +153,6 @@ environment_variables = {
 
 If you find this `settings.py` useful let me know! 
 
-[1]: https://django-configurations.readthedocs.io/en/stable/`django-configurations` 
+[1]: https://django-configurations.readthedocs.io/en/stable/ 
 [2]: https://www.jetbrains.com/pycharm/
 [3]: https://github.com/olivierpons/django_settings/blob/master/settings.py
