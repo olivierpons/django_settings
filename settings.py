@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 from collections.abc import Mapping
 
@@ -32,6 +33,13 @@ errors = []
 def str_parser(error_message_if_doesnt_exist):
     return [str, lambda v: (settings['DEBUG'] is True) or Path(v).is_dir(),
             error_message_if_doesnt_exist]
+
+
+def parser_array_of_str(error_message):
+    return [eval,
+            lambda tab: isinstance(tab, list) and all([
+                isinstance(x, str) for x in tab]),
+            error_message]  # ! array of str
 
 
 def conf_ignore_if_sqlite():
@@ -68,18 +76,17 @@ environment_variables = LazyDict({
     'THUMBNAIL_DIMENSIONS': {
         'default': '(1125, 2436)',  # iPhone X resolution
         'parser': [eval, lambda v: (type(v) is tuple) and len(v) == 2]},
+    # https://docs.djangoproject.com/en/dev/ref/settings/
     'ALLOWED_HOSTS': {
         'default': '[]', 'required': True,  # default = no hosts
-        'parser': [eval,
-                   lambda tab: isinstance(tab, list) and all([
-                       isinstance(x, str) for x in tab])]},  # ! array of str
+        'parser': parser_array_of_str(_("ALLOWED_HOSTS = list of str only!"))},
+    'INTERNAL_IPS': {
+        'default': '["127.0.0.1", ]', 'required': True,
+        'parser': parser_array_of_str(_("INTERNAL_IPS = list of str only!"))},
 
-    # DATABASE_ENGINE = 'django.db.backends.postgresql_psycopg2' :
-    # 'ENGINE': 'django.db.backends.sqlite3',
-    # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # 'DATABASE_ENGINE' = 'django.db.backends.postgresql_psycopg2',
     'DATABASE_ENGINE': {'default': 'django.db.backends.sqlite3', },
     'DATABASE_NAME': {'default': os.path.join(BASE_DIR, 'db.sqlite3'), },
-
     'DATABASE_HOST': conf_ignore_if_sqlite(),
     'DATABASE_CLIENT_ENCODING': conf_ignore_if_sqlite(),
     'DATABASE_DATABASE': conf_ignore_if_sqlite(),
