@@ -43,7 +43,7 @@ def parser_array_of_str(error_message):
     return [
         eval,
         lambda tab: (
-                isinstance(tab, list) and all([isinstance(x, str) for x in tab])
+            isinstance(tab, list) and all([isinstance(x, str) for x in tab])
         ),
         error_message,
     ]  # ! array of str
@@ -70,8 +70,8 @@ def conf_ignore_if_sqlite():
         "parser": [
             eval,
             lambda v: (
-                    (isinstance(v, str) and v != "")
-                    or (v is None and "sqlite" in settings["DATABASE_ENGINE"])
+                (isinstance(v, str) and v != "")
+                or (v is None and "sqlite" in settings["DATABASE_ENGINE"])
             ),
             "Your database isn't sqlite, this var must be configured",
         ],
@@ -132,7 +132,17 @@ environment_variables = LazyDict(
         "DATABASE_DATABASE": conf_ignore_if_sqlite(),
         "DATABASE_USER": conf_ignore_if_sqlite(),
         "DATABASE_PASSWORD": conf_ignore_if_sqlite(),
-
+        "EXAMPLE_FILTER_URL": {
+            "required": True,
+            "parser": parser_url("Is not a valid URL"),
+        },
+        "EXAMPLE_AUTO_GENERATION_1": {
+            # ! return either "/" or "~/my_other":
+            "auto": lambda: "/tmp" if settings["DEBUG"] else "~/prod_folder"
+        },
+        "EXAMPLE_AUTO_GENERATION_2": {
+            "auto": lambda: os.path.join(settings["LOCALE_PATHS"], "other")
+        },
     }
 )
 
@@ -146,6 +156,12 @@ def parse_var(p_var, p_infos):
     elif "required" in p_infos:
         errors.append(p_var)
         return
+    elif "auto" in p_infos:
+        try:
+            settings[p_var] = p_infos["auto"]()
+        except TypeError:
+            raise Exception(f"{p_var}: error using auto generation")
+
     if "parser" in p_infos:
         parser = p_infos["parser"]
         if p_var not in settings:
@@ -195,3 +211,5 @@ ALLOWED_HOSTS = settings["ALLOWED_HOSTS"]
 INTERNAL_IPS = settings["INTERNAL_IPS"]
 STATIC_ROOT = settings["STATIC_ROOT"]
 LOCALE_PATHS = settings["LOCALE_PATHS"]
+EXAMPLE_AUTO_GENERATION_1 = settings["EXAMPLE_AUTO_GENERATION_1"]
+EXAMPLE_AUTO_GENERATION_2 = settings["EXAMPLE_AUTO_GENERATION_2"]

@@ -156,8 +156,11 @@ environment_variables = {
     # .. until this:
     'MY_SPECIAL_SECRET_KEY': {
         'default': 'My secret key',
-        'parser': [eval, lambda v: isinstance(v, str) and v != '',
-        "The secret key must be a non-empty string"]
+        'parser': [
+            eval, 
+            lambda v: isinstance(v, str) and v != '',
+            "The secret key must be a non-empty string"
+        ]
     },
 }
 ```
@@ -165,31 +168,23 @@ environment_variables = {
 ### You need to have a custom default value a variable based on other values?
 The dict in recent Python versions are like old `OrderedDict`.
 So, if you put your key last, your variable will be calculated 
-last and you can use the values of variables already initialized.
+last, and you can use the values of variables already initialized.
+
+Finally, use the `"auto"` key to generate the value. 
 
 ```python
 environment_variables = {
     # ...other key/values...
     # .. until this:
-    "UPLOADS_SPECIFIC": {
-        "default": "-",
-        "parser": [
-            lambda v: "/tmp/uploads_for_av"
-            if settings["SERVER_MODE"] == "prod"
-            else "~/projects/uploads_for_av",
-            lambda v: True,
-        ],
+    "EXAMPLE_AUTO_GENERATION_1": {
+        # ! return either "/" or "~/my_other":
+        "auto": lambda: "/tmp" if settings["DEBUG"] else "~/prod_folder"
+    },
+    "EXAMPLE_AUTO_GENERATION_2": {
+        "auto": lambda: os.path.join(settings["LOCALE_PATHS"], "other")
     },
 },
 ```
-
-Here's how it works, we define the 3 values for the `parser` array:
-
-1. Returns a value *we compute* (instead of parsing the actual value)
-2. This lambda function returns always `True` (because we always set the variable with a good value)
-3. Optional = we dont provide one
-
-Note that this is a very specific need. 
 
 ---
 
