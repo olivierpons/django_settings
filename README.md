@@ -164,7 +164,8 @@ environment_variables = {
 
 ### You need to have a custom default value a variable based on other values?
 The dict in recent Python versions are like old `OrderedDict`.
-So if you put your sp
+So, if you put your key last, your variable will be calculated 
+last and you can use the values of variables already initialized.
 
 ```python
 environment_variables = {
