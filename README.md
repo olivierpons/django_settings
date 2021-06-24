@@ -98,9 +98,15 @@ your environment variables, the code I've done makes sure you have
 all other environment variables set (`DATABASE_USER`, `DATABASE_PASSWORD`
 etc.).
 
+## The parser
+The `parser` key takes an array of 3 values:
+1. a function which *converts* the variable (variables are string, they must be converted)
+2. a function which returns a boolean to say whether it's an acceptable value
+3. a message error (optional) if step (2) fails 
+
 ## How to add new variable in this settings?
 
-### Suppose you need to add new variable called `SMS_PRO_SECRET_KEY`.
+### You need to add new variable (let's call it `MY_SPECIAL_SECRET_KEY`)?
 
 Go to the last value of the environment dictionary  
 `environment_variables = {}`, and add a new key with a new value,
@@ -108,19 +114,20 @@ for example:
 
 ```python
 environment_variables = {
-   # other key/values.. until the last one:
-   'SMS_PRO_SECRET_KEY': {'default': 'Mysecret key'},
+    # ...other key/values...
+    # .. until this:
+   'MY_SPECIAL_SECRET_KEY': {'default': 'My secret key'},
 }
 ```
 Then after all the variables declaration, add yours: like:
 
 ```
-SMS_PRO_SECRET_KEY = settings['SMS_PRO_SECRET_KEY']
+MY_SPECIAL_SECRET_KEY = settings['MY_SPECIAL_SECRET_KEY']
 ```
 
 And you're good to go!
 
-### What if you need to make sure `SMS_PRO_SECRET_KEY` is of a specific type?
+### You need to make sure a settings variable is of a specific type?
 Precise what the parser is, and a callback function that checks if
 it is of the expected type.
 
@@ -128,10 +135,12 @@ Example:
 
 ```python
 environment_variables = {
-   # other key/values.. until the last one:
-    'SMS_PRO_SECRET_KEY': {
-        'default': 'Mysecret key',
-        'parser': [eval, lambda v: isinstance(v, str) and v != '']},
+    # ...other key/values...
+    # .. until this:
+    'MY_SPECIAL_SECRET_KEY': {
+        'default': 'My secret key',
+        'parser': [eval, lambda v: isinstance(v, str) and v != '']
+    },
 }
 ```
 
@@ -143,13 +152,45 @@ Example:
 
 ```python
 environment_variables = {
-   # other key/values.. until the last one:
-    'SMS_PRO_SECRET_KEY': {
-        'default': 'Mysecret key',
+    # ...other key/values...
+    # .. until this:
+    'MY_SPECIAL_SECRET_KEY': {
+        'default': 'My secret key',
         'parser': [eval, lambda v: isinstance(v, str) and v != '',
-        "The SMS secret key must be a non-empty string"]},
+        "The secret key must be a non-empty string"]
+    },
 }
 ```
+
+### You need to have a custom default value a variable based on other values?
+The dict in recent Python versions are like old `OrderedDict`.
+So if you put your sp
+
+```python
+environment_variables = {
+    # ...other key/values...
+    # .. until this:
+    "UPLOADS_SPECIFIC": {
+        "default": "-",
+        "parser": [
+            lambda v: "/tmp/uploads_for_av"
+            if settings["SERVER_MODE"] == "prod"
+            else "~/projects/uploads_for_av",
+            lambda v: True,
+        ],
+    },
+},
+```
+
+Here's how it works, we define the 3 values for the `parser` array:
+
+1. Returns a value *we compute* (instead of parsing the actual value)
+2. This lambda function returns always `True` (because we always set the variable with a good value)
+3. Optional = we dont provide one
+
+Note that this is a very specific need. 
+
+---
 
 If you find this `settings.py` useful let me know! 
 
